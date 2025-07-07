@@ -1,0 +1,41 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - echo Installing Terraform...
+      - sudo yum install -y yum-utils shadow-utils
+      - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+      - sudo yum -y install terraform
+
+  pre_build:
+    commands:
+      - echo Logging into AWS...
+      - terraform --version
+      - terraform init
+      - docker --version 
+  build:
+    commands:
+      - echo Provisioning EC2...
+      - terraform plan -out=tfplan
+      - terraform apply -auto-approve tfplan
+
+  post_build:
+  commands:  
+    - echo "Fetching EC2 Instance ID from Terraform output..."
+    - instance_id=$(terraform output -raw instanceID)
+    - echo "Instance ID: $instance_id"
+    - echo "sending ssm commands"
+    - aws ssm send-command \
+          --instance-ids "$instance_id" \
+          --document-name "AWS-RunShellScript" \
+          --comment "Install Java and run app" \
+          --parameters 'commands=[
+            "sudo yum update -y",
+            "sudo dnf install -y java-17-amazon-corretto",
+            "aws s3 cp s3://studentapp-jarfile/studentapp-1.0.0.jar .",
+            "java -jar studentapp-1.0.0.jar &"
+          ]' \
+          --region us-east-1 \
+          --output text     
