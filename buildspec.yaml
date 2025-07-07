@@ -25,4 +25,4 @@ phases:
 
   post_build:
     commands:
-      - echo "Post-build phase complete."
+      - echo "Post-build phase complete"
