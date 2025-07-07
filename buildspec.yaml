@@ -20,9 +20,3 @@ phases:
       - echo Provisioning EC2...
       - terraform plan -out=tfplan
       - terraform apply -auto-approve tfplan
-
-  post_build:
-    commands:  
-      - echo "Fetching EC2 Instance ID from Terraform output..."
-      - instance_id=$(terraform output -raw instanceID)
-      
