@@ -32,3 +32,33 @@ resource "aws_iam_role_policy_attachment" "ssm_access" {
   role       = aws_iam_role.ec2_role.name
 }
 
+
+# For access on secretemanager custom policy
+
+
+resource "aws_iam_policy" "secretsm_acess_policy" {
+  name        = "secretsm-access-policy"
+  description = "To fetch db cred from ssm"
+
+  policy = <<EOT
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:us-east-1:058264408180:secret:/studentApp/db-secret*"
+    }
+  ]
+}
+EOT
+}
+
+# Attach secretmanager policy to role 
+resource "aws_iam_role_policy_attachment" "secretesmanager" {
+  policy_arn = aws_iam_policy.secretsm_acess_policy.arn
+  role       = aws_iam_role.ec2_role.name
+}
