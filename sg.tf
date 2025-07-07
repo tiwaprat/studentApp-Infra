@@ -23,3 +23,7 @@ resource "aws_vpc_security_group_egress_rule" "studentApp_sg2_ipv4" {
   ip_protocol       = "tcp"
   to_port           = 443
 }
+output "name" {
+  value = aws_security_group.studentApp_sg.name
+  
+}
