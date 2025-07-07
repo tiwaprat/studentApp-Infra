@@ -25,17 +25,4 @@ phases:
     commands:  
       - echo "Fetching EC2 Instance ID from Terraform output..."
       - instance_id=$(terraform output -raw instanceID)
-      - echo "Instance ID: $instance_id"
-      - echo "sending ssm commands"
-      - aws ssm send-command \
-          --instance-ids "$instance_id" \
-          --document-name "AWS-RunShellScript" \
-          --comment "Install Java and run app" \
-          --parameters 'commands=[
-            "sudo yum update -y",
-            "sudo dnf install -y java-17-amazon-corretto",
-            "aws s3 cp s3://studentapp-jarfile/studentapp-1.0.0.jar .",
-            "java -jar studentapp-1.0.0.jar &"
-          ]' \
-          --region us-east-1 \
-          --output text     
+      
