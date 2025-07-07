@@ -1,4 +1,5 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
@@ -15,8 +16,13 @@ phases:
       - terraform --version
       - terraform init
       - docker --version 
+
   build:
     commands:
       - echo Provisioning EC2...
       - terraform plan -out=tfplan
       - terraform apply -auto-approve tfplan
+
+  post_build:
+    commands:
+      - echo "Post-build phase complete."
