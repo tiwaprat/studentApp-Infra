@@ -11,5 +11,9 @@ resource "aws_secretsmanager_secret_version" "student_db_secret_version" {
     username = "admin"
     password = "secretepassword123"
   })
+
+  lifecycle {
+   prevent_destroy = true
+ }
 }
     
