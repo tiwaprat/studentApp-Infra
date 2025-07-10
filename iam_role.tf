@@ -57,7 +57,7 @@ resource "aws_iam_policy" "secretsm_acess_policy" {
 EOT
 }
 
-# Attach secretmanager policy to role 
+# Attach secretManager policy to role 
 resource "aws_iam_role_policy_attachment" "secretesmanager" {
   policy_arn = aws_iam_policy.secretsm_acess_policy.arn
   role       = aws_iam_role.ec2_role.name
